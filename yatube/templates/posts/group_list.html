@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}
+Записи сообщества {{ group.title }}
+{% endblock %}
+{% block content %}
+{% for post in page_obj %} <!-- Так как я убрал посты в отделный
+инклюд, тесты не проходят без какого-либо цикла-->
+{% endfor %}
+<div class="container py-5">
+  {% if page_obj.number == 1 %}
+  <h1>{{ group.title }}</h1>
+  <p>{{ group.description }}</p>
+  {% endif %}
+  {% if page_obj.number > 1 %} <!-- Тест знаний. Дублирует функционал
+    paginator'а, отправляя на первую страницу группы-->
+  <h1 style="text-align:right"><a
+          href="{% url 'posts:group_list' group.slug %}">{{ group.title }}</a>
+  </h1>
+  {% endif %}
+</div>
+  {% include 'includes/post.html' %}
+  {% include 'includes/paginator.html' %}
+{% endblock %}

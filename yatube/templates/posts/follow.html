@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Избранные авторы{% endblock %}
+{% block content %}
+{% load cache %}
+{% cache 20 follow_page %}
+{% include 'includes/switcher.html' %}
+{% include 'includes/post.html' %}
+{% include 'includes/paginator.html' %}
+{% endcache %}
+{% endblock %}
