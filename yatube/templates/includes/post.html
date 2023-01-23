@@ -1,7 +1,4 @@
-{% with request.resolver_match.view_name as view_name %}
 {% load thumbnail %}
-<div class="container">
-{% for post in page_obj %}
   <article>
     <ul>
       <li>
@@ -16,15 +13,3 @@
     {% endthumbnail %}
     <p>{{ post.text }}</p>
   </article>
-  {% if post.group and view_name != 'posts:group_list' %}
-  <a href="{% url 'posts:group_list' post.group.slug %}">Все записи
-    группы</a>
-  {% endif %}
-  <p><a href="{% url 'posts:post_detail' post.pk %}">подробная
-    информация </a></p>
-  {% if not forloop.last %}
-  <hr>
-  {% endif %}
-  {% endfor %}
-</div>
-{% endwith %}

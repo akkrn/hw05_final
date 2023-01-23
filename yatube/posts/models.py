@@ -64,8 +64,8 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ("-created",)
-        verbose_name = "Пост"
-        verbose_name_plural = "Посты"
+        verbose_name = "Комментарий"
+        verbose_name_plural = "Комментарии"
 
     def __str__(self):
         return self.text[:LENGTH_POST_STR]
@@ -85,6 +85,11 @@ class Follow(models.Model):
         verbose_name="Автор",
         help_text="Автор, на которого хочешь подписаться",
     )
+
+    class Meta:
+        unique_together = ["user", "author"]
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"
 
     def __str__(self):
         return f"{self.user.username} подписан на {self.author.username}"

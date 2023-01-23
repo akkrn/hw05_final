@@ -16,7 +16,7 @@ def paginate_posts(queryset, page_number):
 
 
 def index(request):
-    post_list = Post.objects.all().order_by("-created")
+    post_list = Post.objects.select_related("author", "group")
     page_number = request.GET.get("page")
     page_obj = paginate_posts(post_list, page_number)
     context = {"page_obj": page_obj}
@@ -26,7 +26,7 @@ def index(request):
 
 def groups_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
-    post_list = group.posts.order_by("-created")
+    post_list = Post.objects.filter(group=group).select_related("author")
     page_number = request.GET.get("page")
     page_obj = paginate_posts(post_list, page_number)
     context = {"group": group, "page_obj": page_obj}
@@ -40,14 +40,13 @@ User = get_user_model()
 def profile(request, username):
     author = get_object_or_404(User, username=username)
     posts_count = Post.objects.filter(author=author).count()
-    post_list = author.posts.order_by("-created")
+    post_list = Post.objects.filter(author=author).select_related("group")
     page_number = request.GET.get("page")
     page_obj = paginate_posts(post_list, page_number)
-    following = False
-    if request.user.is_authenticated:
-        following = Follow.objects.filter(
-            user=request.user, author=author
-        ).exists()
+    following = (
+        request.user.is_authenticated
+        and Follow.objects.filter(user=request.user, author=author).exists()
+    )
     context = {
         "author": author,
         "posts_count": posts_count,
@@ -60,8 +59,8 @@ def profile(request, username):
 
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    count_posts = Post.objects.all().filter(author=post.author).count()
-    comments = Comment.objects.all().filter(post_id=post_id)
+    count_posts = Post.objects.filter(author=post.author).count()
+    comments = Comment.objects.filter(post_id=post_id).select_related("author")
     form = CommentForm(request.POST or None)
     context = {
         "is_valid": request.user == post.author,
@@ -95,7 +94,7 @@ def post_create(request):
 
 
 def user_master_required(func):
-    """Декоратор, который проверяет имеет ли право юзер редактировать пост"""
+    """Декоратор, который проверяет имеет ли право юзер редактировать пост."""
 
     @functools.wraps(func)
     def wrapper(request, *args, **kwargs):
@@ -151,7 +150,7 @@ def follow_index(request):
     authors = Follow.objects.filter(user=request.user).values_list(
         "author", flat=True
     )
-    post_list = Post.objects.filter(author__in=authors)
+    post_list = Post.objects.filter(author__in=authors).select_related("group")
     page_number = request.GET.get("page")
     page_obj = paginate_posts(post_list, page_number)
     context = {"page_obj": page_obj}
@@ -161,11 +160,8 @@ def follow_index(request):
 @login_required
 def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
-    following = Follow.objects.filter(
-        user=request.user, author=author
-    ).exists()
-    if request.user != author and following is False:
-        Follow.objects.create(user=request.user, author=author)
+    if request.user != author:
+        Follow.objects.get_or_create(user=request.user, author=author)
     return redirect("posts:profile", username=username)
 
 

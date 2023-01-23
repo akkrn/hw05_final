@@ -71,16 +71,17 @@ class PostPagesTests(TestCase):
             ),
         ]
         for name in pages_names:
-            response = self.authorized_client.get(name)
-            context_object = response.context["page_obj"][0]
-            post_author = context_object.author
-            post_text = context_object.text
-            post_group = context_object.group.title
-            post_image = context_object.image
-            self.assertEqual(post_author, PostPagesTests.user)
-            self.assertEqual(post_text, PostPagesTests.post.text)
-            self.assertEqual(post_group, PostPagesTests.group.title)
-            self.assertEqual(post_image, PostPagesTests.post.image)
+            with self.subTest(name=name):
+                response = self.authorized_client.get(name)
+                context_object = response.context["page_obj"][0]
+                post_author = context_object.author
+                post_text = context_object.text
+                post_group = context_object.group.title
+                post_image = context_object.image
+                self.assertEqual(post_author, PostPagesTests.user)
+                self.assertEqual(post_text, PostPagesTests.post.text)
+                self.assertEqual(post_group, PostPagesTests.group.title)
+                self.assertEqual(post_image, PostPagesTests.post.image)
 
     def test_initial_value_in_create_post(self):
         """Cтраница создания и редактирования поста сформированы с правильным
@@ -92,16 +93,17 @@ class PostPagesTests(TestCase):
             ),
         ]
         for name in pages_names:
-            response = self.authorized_client.get(name)
-            form_fields = {
-                "text": forms.fields.CharField,
-                "group": forms.fields.ChoiceField,
-                "image": forms.fields.ImageField,
-            }
-            for value, expected in form_fields.items():
-                with self.subTest(value=value):
-                    form_field = response.context["form"].fields[value]
-                    self.assertIsInstance(form_field, expected)
+            with self.subTest(name=name):
+                response = self.authorized_client.get(name)
+                form_fields = {
+                    "text": forms.fields.CharField,
+                    "group": forms.fields.ChoiceField,
+                    "image": forms.fields.ImageField,
+                }
+                for value, expected in form_fields.items():
+                    with self.subTest(value=value):
+                        form_field = response.context["form"].fields[value]
+                        self.assertIsInstance(form_field, expected)
         self.assertTrue(
             response.context["post"].group != PostPagesTests.new_group
         )
@@ -235,4 +237,3 @@ class FollowTests(TestCase):
         self.unauthorised_client.force_login(self.user)
         response = self.unauthorised_client.get(reverse("posts:follow_index"))
         self.assertEqual(len(response.context["page_obj"]), 1)
-        pass

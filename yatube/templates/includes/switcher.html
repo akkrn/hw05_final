@@ -1,6 +1,5 @@
 {% with request.resolver_match.view_name as view_name %}
 {% if user.is_authenticated %}
-<div class="container">
   <div class="row my-3">
     <ul class="nav nav-tabs">
       <li class="nav-item">
@@ -21,6 +20,5 @@
       </li>
     </ul>
   </div>
-</div>
 {% endif %}
 {% endwith %}

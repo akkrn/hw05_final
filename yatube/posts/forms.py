@@ -1,6 +1,5 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, forms
 from django.utils.functional import empty
-from users import forms
 
 from .models import Comment, Post
 

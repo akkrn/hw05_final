@@ -17,7 +17,15 @@
           href="{% url 'posts:group_list' group.slug %}">{{ group.title }}</a>
   </h1>
   {% endif %}
-</div>
-  {% include 'includes/post.html' %}
+<div class="container py-5 ">
+  {% for post in page_obj %}
+    {% include 'includes/post.html' %}
+    <p><a href="{% url 'posts:post_detail' post.pk %}">подробная
+      информация </a></p>
+    {% if not forloop.last %}
+    <hr>
+    {% endif %}
+  {% endfor %}
   {% include 'includes/paginator.html' %}
+</div>
 {% endblock %}
