@@ -1,7 +1,8 @@
 <div><a href="https://github.com/akkrn/hw05_final/blob/main/README-rus.md" ><img alt="ru" src="https://img.shields.io/badge/%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D1%8F-%D0%BD%D0%B0%20%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%BE%D0%BC-white"/></a></div>
 <details open><summary><h2>📚 Description</h2></summary>
+    
 With this project, you can share your thoughts in diaries that will be either private or viewable by your friends and others. Accordingly, you will be able to read their thoughts, too. Commenting on entries, subscribing to your favorite authors, and various interest groups are also available. Enjoy!
-This service has a [full-featured API](https://github.com/akkrn/api_final_yatube)
+This service has a [full-featured API](https://github.com/akkrn/api_final_yatube).
 
 </details>
 
